@@ -3,7 +3,8 @@
     public enum DevelopmentType
     {
         Apartment,
-        MixedUse,
+        Commercial,
+        Mixed_Use,
         SubDivision
     }
 }

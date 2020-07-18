@@ -5,6 +5,7 @@ using Example;
 using Example.Calculators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ExampleCLI
 {
@@ -25,11 +26,20 @@ namespace ExampleCLI
             
             logger.LogDebug("Starting building metrics service");
 
-            var service = serviceProvider.GetService<IBuildingMetricsService>();
-            var response = await service.Execute(options);
+            try
+            {
+                var service = serviceProvider.GetService<IBuildingMetricsService>();
+                var response = await service.Execute(options);
+                var responseDisplay = JsonConvert.SerializeObject(response);
+                Console.WriteLine($"Output: {responseDisplay}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             logger.LogDebug("Calculation completed");
-            Console.Read();
+            Console.ReadKey();
         }
     }
 
@@ -39,9 +49,12 @@ namespace ExampleCLI
         {
             var serviceProvider = new ServiceCollection()
                 .AddLogging(builder => builder.AddConsole())
+                .AddSingleton<IBuildingCalculator, ApartmentCalculator>()
+                .AddSingleton<IBuildingCalculator, CommercialCalculator>()
+                .AddSingleton<IBuildingCalculator, MixedUseCalculator>()
+                .AddSingleton<IBuildingCalculator, SubDivisionCalculator>()
                 .AddSingleton<IBuildingMetricsValidator, BuildingMetricsValidator>()
                 .AddSingleton<IBuildingMetricsCalculator, BuildingMetricsCalculator>()
-                .AddSingleton<IBuildingCalculator, ApartmentCalculator>()
                 .AddSingleton<IBuildingMetricsService, BuildingMetricsService>()
                 .BuildServiceProvider();
 

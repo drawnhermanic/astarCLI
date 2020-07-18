@@ -7,12 +7,31 @@ namespace Example.Calculators
     {
         public bool CanCalculate(ISiteConfiguration siteConfiguration)
         {
-            return siteConfiguration is IApartmentConfiguration;
+            return siteConfiguration is ApartmentConfiguration;
         }
 
         public async Task<SiteResponse> Calculate(SiteRequest request)
         {
-            var response = new SiteResponse();
+            var response = new SiteResponse
+            {
+                SiteArea = SimpleCalculator.Area(request.Width, request.Length),
+                SitePerimeter = SimpleCalculator.Perimeter(request.Width, request.Length)
+            };
+
+            if (request.SiteConfiguration is ApartmentConfiguration apartmentConfiguration)
+            {
+                var buildingFootprint =
+                    SimpleCalculator.BuildingFootprint(response.SiteArea, apartmentConfiguration.SiteCoverage);
+                var buildingGFA = SimpleCalculator.BuildingGFA(buildingFootprint, apartmentConfiguration.NumberOfStoreys);
+                var numberOfApartments = SimpleCalculator.NumberOfApartments(buildingGFA, apartmentConfiguration.AverageApartmentArea);
+            
+                response.SiteConfigurationResponse = new ApartmentResponse
+                {
+                    BuildingFootprint = buildingFootprint,
+                    BuildingGFA = buildingGFA,
+                    NumberOfApartments = numberOfApartments
+                };
+            }
 
             return await Task.FromResult(response);
         }

@@ -13,9 +13,9 @@ namespace Example
     }
     public class BuildingMetricsCalculator : IBuildingMetricsCalculator
     {
-        private readonly IList<IBuildingCalculator> _buildingCalculators;
+        private readonly IEnumerable<IBuildingCalculator> _buildingCalculators;
 
-        public BuildingMetricsCalculator(IList<IBuildingCalculator> buildingCalculators)
+        public BuildingMetricsCalculator(IEnumerable<IBuildingCalculator> buildingCalculators)
         {
             _buildingCalculators = buildingCalculators;
         }

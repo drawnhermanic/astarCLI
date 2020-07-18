@@ -1,4 +1,6 @@
-﻿namespace Example.Models
+﻿using Newtonsoft.Json;
+
+namespace Example.Models
 {
     public interface ICommercialConfiguration : ISiteConfiguration
     {
@@ -6,9 +8,14 @@
         int RetailMix { get; set; }
     }
 
-    public class CommercialConfiguration : SiteConfiguration, ICommercialConfiguration
+    public class CommercialConfiguration : ICommercialConfiguration
     {
+        public DevelopmentType DevelopmentType { get; } = DevelopmentType.Commercial;
+        public int NumberOfStoreys { get; set; }
+        public decimal SiteCoverage { get; set; }
+        [JsonProperty("commerical_mix")] 
         public int CommercialMix { get; set; }
+        [JsonProperty("retail_mix")] 
         public int RetailMix { get; set; }
     }
 }

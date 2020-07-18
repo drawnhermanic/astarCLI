@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Example.Models;
+using Newtonsoft.Json;
 
 namespace Example
 {
     public interface IBuildingMetricsService
     {
-        Task<SiteResponse> Execute(JsonOptions options);
+        Task<IList<SiteResponse>> Execute(JsonOptions options);
     }
 
     public class BuildingMetricsService : IBuildingMetricsService
@@ -21,17 +23,23 @@ namespace Example
             _calculator = calculator;
         }
 
-        public async Task<SiteResponse> Execute(JsonOptions options)
+        public async Task<IList<SiteResponse>> Execute(JsonOptions options)
         {
             if (!_validator.Validate(options)) 
                 throw new ArgumentException("Request is not valid");
-            var request = CreateRequest(options);
-            return  await _calculator.Calculate(request);
+            var requests = CreateRequests(options);
+            var response = new List<SiteResponse>();
+            foreach (var request in requests)
+            {
+                var siteResponse = await _calculator.Calculate(request);
+                response.Add(siteResponse);
+            }
+            return response;
         }
 
-        private SiteRequest CreateRequest(JsonOptions options)
+        private IList<SiteRequest> CreateRequests(JsonOptions options)
         {
-            return new SiteRequest();
+            return JsonConvert.DeserializeObject<IList<SiteRequest>>(options.Input);
         }
     }
 }

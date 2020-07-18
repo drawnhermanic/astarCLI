@@ -25,7 +25,7 @@ namespace Example
 
     public class JsonOptions
     {
-        [Option('i', "Input", Required = false, HelpText = "Array of site inputs")]
+        [Option('i', "Input", Required = true, HelpText = "Array of site inputs")]
         public string Input { get; set; }
 
         [Usage(ApplicationAlias = "Building Calculator")]
@@ -33,7 +33,7 @@ namespace Example
         {
             get
             {
-                yield return new CommandLine.Text.Example("Normal scenario", new JsonOptions { Input = "file.bin" });
+                yield return new CommandLine.Text.Example("JSON input with array of site configurations", new JsonOptions { Input = "[]" });
             }
         }
     }

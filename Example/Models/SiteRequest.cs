@@ -1,9 +1,15 @@
-﻿namespace Example.Models
+﻿using Newtonsoft.Json;
+
+namespace Example.Models
 {
     public class SiteRequest
     {
-        public decimal Width { get; set; }  
-        public decimal Height { get; set; }
+        [JsonProperty("width")]
+        public decimal Width { get; set; }
+        [JsonProperty("length")] 
+        public decimal Length { get; set; }
+
+        [JsonProperty("site_config")] 
         public ISiteConfiguration SiteConfiguration { get; set; }
     }
 }
